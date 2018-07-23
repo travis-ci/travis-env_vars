@@ -14,11 +14,11 @@ module Travis
 
     module Parser
       class String
-	KEY   = /[^\s=]+/
-	WORD  = /(\\["']|[^'"\s])+/
-	QUOTE = /(['"]{1})/
-	SPACE = /\s+/
-	EQUAL = /=/
+	KEY   = %r{[^\s=]+}
+	WORD  = %r{(\\["']|[^'"\s])+}
+	QUOTE = %r{(['"]{1})}
+	SPACE = %r{\s+}
+	EQUAL = %r{=}
 
 	extend Forwardable
 
