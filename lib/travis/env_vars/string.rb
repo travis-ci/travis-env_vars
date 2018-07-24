@@ -20,22 +20,14 @@ module Travis
         @str = StringScanner.new(str)
       end
 
-      def to_h
-        pairs.to_h
-      end
-
       def parse
-        join(pairs).tap { err('end of string') unless eos? }
-      end
-
-      def join(pairs)
-        pairs.map { |pair| pair.join('=') }
+        pairs.to_h
       end
 
       def pairs
         pairs = [pair]
         pairs += self.pairs while space
-        pairs
+        pairs.tap { err('end of string') unless eos? }
       end
 
       def pair

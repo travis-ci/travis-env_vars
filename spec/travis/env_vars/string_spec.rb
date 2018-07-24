@@ -1,5 +1,5 @@
-RSpec.describe Travis::EnvVars::String do
-  subject { |e| described_class.new(e.description).parse }
+RSpec.describe Travis::EnvVars do
+  subject { |e| described_class.new(e.description).to_a }
 
   let(:parse_error) { Travis::EnvVars::ParseError }
 
