@@ -1,85 +1,85 @@
-RSpec.describe Travis::EnvVars::Parser::String do
+RSpec.describe Travis::EnvVars::String do
   subject { |e| described_class.new(e.description).parse }
-  
+
   let(:parse_error) { Travis::EnvVars::ParseError }
 
-  specify %(FOO=) do
+  it %(FOO=) do
     should eq [%(FOO=)]
   end
 
-  specify %(FOO="") do
+  it %(FOO="") do
     should eq [%(FOO="")]
   end
 
-  specify %(FOO=foo BAR=bar BAZ=baz) do
+  it %(FOO=foo BAR=bar BAZ=baz) do
     should eq [%(FOO=foo), %(BAR=bar), %(BAZ=baz)]
   end
 
-  specify %(FOO="foo foo" BAR="bar bar") do
+  it %(FOO="foo foo" BAR="bar bar") do
     should eq [%(FOO="foo foo"), %(BAR="bar bar")]
   end
 
-  specify %(FOO='foo foo' BAR='bar bar') do
+  it %(FOO='foo foo' BAR='bar bar') do
     should eq [%(FOO='foo foo'), %(BAR='bar bar')]
   end
 
-  specify %(FOO='"foo foo" foo' BAR='"bar bar" bar') do
+  it %(FOO='"foo foo" foo' BAR='"bar bar" bar') do
     should eq [%(FOO='"foo foo" foo'), %(BAR='"bar bar" bar')]
   end
 
-  specify %(FOO="'foo foo' foo" BAR="'bar bar' bar") do
+  it %(FOO="'foo foo' foo" BAR="'bar bar' bar") do
     should eq [%(FOO="'foo foo' foo"), %(BAR="'bar bar' bar")]
   end
 
-  specify 'FOO=foo\"bar' do
+  it 'FOO=foo\"bar' do
     should eq ['FOO=foo\"bar']
   end
 
-  specify 'FOO="\"foo\" bar"' do
+  it 'FOO="\"foo\" bar"' do
     should eq ['FOO="\"foo\" bar"']
   end
 
-  specify 'FOO="\"\\\"foo foo\\\"\" foo"' do
+  it 'FOO="\"\\\"foo foo\\\"\" foo"' do
     should eq ['FOO="\"\\\"foo foo\\\"\" foo"']
   end
 
-  specify 'FOO=$bar' do
+  it 'FOO=$bar' do
     should eq ['FOO=$bar']
   end
 
-  specify 'FOO="$bar"' do
+  it 'FOO="$bar"' do
     should eq ['FOO="$bar"']
   end
 
-  specify 'FOO=$(pwd)' do
+  it 'FOO=$(pwd)' do
     should eq ['FOO=$(pwd)']
   end
 
-  specify 'FOO=`pwd`' do
+  it 'FOO=`pwd`' do
     should eq ['FOO=`pwd`']
   end
 
-  specify 'FOO' do
+  it 'FOO' do
     expect { subject }.to raise_error(parse_error)
   end
 
-  specify 'FOO="' do
+  it 'FOO="' do
     expect { subject }.to raise_error(parse_error)
   end
 
-  specify 'FOO="\"' do
+  it 'FOO="\"' do
     expect { subject }.to raise_error(parse_error)
   end
 
-  specify 'FOO="\" ' do
+  it 'FOO="\" ' do
     expect { subject }.to raise_error(parse_error)
   end
 
-  specify 'FOO="\" BAR=bar' do
+  it 'FOO="\" BAR=bar' do
     expect { subject }.to raise_error(parse_error)
   end
 
-  specify 'FOO=foo"bar' do
+  it 'FOO=foo"bar' do
     expect { subject }.to raise_error(parse_error)
   end
 end
