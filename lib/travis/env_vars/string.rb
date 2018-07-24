@@ -4,12 +4,12 @@ require 'forwardable'
 module Travis
   class EnvVars
     class String
-      KEY   = /[^\s=]+/
-      WORD  = /(\\.*|[^'"\s])+/
-      QUOTE = /(['"`]{1})/
-      SPACE = /\s+/
-      EQUAL = /=/
-      SUBSH = /\$\(.*?\)/
+      KEY   = %r([^\s=]+)
+      WORD  = %r((\\.*|[^'"\s])+)
+      QUOTE = %r((['"`]{1}))
+      SPACE = %r(\s+)
+      EQUAL = %r(=)
+      SUBSH = %r(\$\(.*?\))
 
       extend Forwardable
 
@@ -60,8 +60,6 @@ module Travis
         return unless peek(1) =~ QUOTE
         err($1) if check(/#{$1}\\#{$1}($|\s)/)
         scan(/#{$1}(\\#{$1}|[^#{$1}])*#{$1}/)
-        # return unless peek(1) =~ QUOTE
-        # scan(/#{$1}(\\#{$1}|[^#{$1}])*#{$1}/)
       end
 
       def space
