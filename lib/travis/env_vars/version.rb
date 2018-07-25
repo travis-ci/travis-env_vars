@@ -1,5 +1,5 @@
 module Travis
-  module EnvVars
+  class EnvVars
     VERSION = "0.1.0"
   end
 end
