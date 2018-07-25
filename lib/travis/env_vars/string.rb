@@ -1,5 +1,7 @@
 require 'strscan'
 require 'forwardable'
+require 'travis/env_vars/collection'
+require 'travis/env_vars/env_var'
 
 module Travis
   class EnvVars
@@ -21,19 +23,16 @@ module Travis
       end
 
       def parse
-        pairs.to_h
+        collection = Collection.new
+        collection << take
+        collection << take while space
+        collection.tap { err('end of string') unless eos? }
       end
 
-      def pairs
-        pairs = [pair]
-        pairs += self.pairs while space
-        pairs.tap { err('end of string') unless eos? }
-      end
-
-      def pair
+      def take
         return unless key = self.key
         parts = [key, equal, value]
-        [parts.first, parts.last]
+        EnvVar.new(parts.first, parts.last)
       end
 
       def key
