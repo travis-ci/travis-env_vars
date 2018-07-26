@@ -17,7 +17,7 @@ module Travis
       attr_reader :str
 
       def initialize(str)
-        @str = StringScanner.new(str)
+        @str = StringScanner.new(str.to_s.strip)
       end
 
       def parse
