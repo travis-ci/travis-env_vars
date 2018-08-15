@@ -15,7 +15,7 @@ module Travis
       @obj = obj
     end
 
-    def parse(obj)
+    def parse
       case obj
       when ::String
         String.new(obj).parse
@@ -25,10 +25,7 @@ module Travis
         raise ArgumentError, "unsupported type #{obj.class} (given: #{obj.inspect})"
       end
     end
-
-    def to_collection
-      parse(obj)
-    end
+    alias :to_collection :parse
 
     %i(to_pairs to_h to_strings to_s).each do |method|
       define_method(method) do
