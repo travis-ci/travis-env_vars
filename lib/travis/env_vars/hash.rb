@@ -12,8 +12,14 @@ module Travis
 
       def parse
         Collection.new.tap do |collection|
-          hash.each { |key, value| collection << EnvVar.new(key, value) }
+          hash.each { |key, value| collection << parse_pair(key, value) }
         end
+      end
+
+      private
+
+      def parse_pair(key, value)
+        key == :secure ? SecureEnvVar.new(value) : EnvVar.new(key, value)
       end
     end
   end
