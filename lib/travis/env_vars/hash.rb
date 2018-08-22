@@ -10,6 +10,10 @@ module Travis
         @hash = hash
       end
 
+      def parses?
+        hash.keys.all? { |key| /^[A-Z_]+$/.match(key) }
+      end
+
       def parse
         Collection.new.tap do |collection|
           hash.each { |key, value| collection << parse_pair(key, value) }

@@ -27,6 +27,12 @@ module Travis
     end
     alias :to_collection :parse
 
+    def try_parse
+      parse
+    rescue ParseError
+      nil
+    end
+
     %i(to_pairs to_h to_strings to_s).each do |method|
       define_method(method) do
         to_collection.send(method)

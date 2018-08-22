@@ -15,11 +15,19 @@ module Travis
 
       extend Forwardable
 
-      def_delegators :str, :check, :eos?, :peek, :pos, :scan, :skip, :string
+      def_delegators :str, :check, :eos?, :peek, :pos, :scan, :skip, :string, :reset
       attr_reader :str
 
       def initialize(str)
         @str = StringScanner.new(str.to_s.strip)
+      end
+
+      def parses?
+        parse
+        reset
+        true
+      rescue ParseError
+        false
       end
 
       def parse

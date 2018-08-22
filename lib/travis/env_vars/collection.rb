@@ -8,7 +8,7 @@ module Travis
       end
 
       def to_h
-        Hash[to_pairs]
+        ::Hash[to_pairs]
       end
 
       def to_strings
@@ -17,6 +17,10 @@ module Travis
 
       def to_s(delimiter = ' ')
         to_strings.join(delimiter)
+      end
+
+      def deep_merge(other)
+        other.union(self)
       end
     end
   end
