@@ -1,5 +1,7 @@
 require 'strscan'
 require 'forwardable'
+require 'travis/env_vars/collection'
+require 'travis/env_vars/env_var'
 
 module Travis
   class EnvVars
@@ -13,27 +15,32 @@ module Travis
 
       extend Forwardable
 
-      def_delegators :str, :check, :eos?, :peek, :pos, :scan, :skip, :string
+      def_delegators :str, :check, :eos?, :peek, :pos, :scan, :skip, :string, :reset
       attr_reader :str
 
       def initialize(str)
         @str = StringScanner.new(str.to_s.strip)
       end
 
+      def parses?
+        parse
+        reset
+        true
+      rescue ParseError
+        false
+      end
+
       def parse
-        pairs.to_h
+        collection = Collection.new
+        collection << take
+        collection << take while space
+        collection.tap { err('end of string') unless eos? }
       end
 
-      def pairs
-        pairs = [pair]
-        pairs += self.pairs while space
-        pairs.tap { err('end of string') unless eos? }
-      end
-
-      def pair
+      def take
         return unless key = self.key
         parts = [key, equal, value]
-        [parts.first, parts.last]
+        EnvVar.new(parts.first, parts.last)
       end
 
       def key

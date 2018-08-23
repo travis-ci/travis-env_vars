@@ -1,3 +1,4 @@
+require 'travis/env_vars/hash'
 require 'travis/env_vars/string'
 require 'travis/env_vars/version'
 
@@ -8,43 +9,36 @@ module Travis
     ArgumentError = Class.new(::ArgumentError)
     ParseError    = Class.new(ArgumentError)
 
-    attr_reader :objs
+    attr_reader :obj
 
-    def initialize(*objs)
-      @objs = objs.map { |obj| normalize(obj) }
+    def initialize(obj)
+      @obj = obj
     end
 
-    def to_h(merge_mode = :merge)
-      send(merge_mode)
+    def parse
+      case obj
+      when ::String
+        String.new(obj).parse
+      when ::Hash
+        Hash.new(obj).parse
+      else
+        raise ArgumentError, "unsupported type #{obj.class} (given: #{obj.inspect})"
+      end
+    end
+    alias :to_collection :parse
+
+    def try_parse
+      parse
+    rescue ParseError
+      nil
     end
 
-    def to_a(merge_mode = :merge)
-      send(merge_mode).map { |pair| pair.join('=') }
+    %i(to_pairs to_h to_strings to_s).each do |method|
+      define_method(method) do
+        to_collection.send(method)
+      end
     end
 
-    private
-
-      def normalize(obj)
-        case obj
-        when ::String
-          String.new(obj).parse
-        when Hash
-          obj
-        else
-          raise ArgumentError, "unsupported type #{obj.class} (given: #{obj.inspect})"
-        end
-      end
-
-      def replace
-        # TODO
-      end
-
-      def merge
-        objs.inject(&:merge)
-      end
-
-      def deep_merge
-        # TODO
-      end
+    alias :to_a :to_strings
   end
 end
